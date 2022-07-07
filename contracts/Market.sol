@@ -47,6 +47,11 @@ contract Market {
     openOffers[ticker].orderedSellOffers.pop();
   }
 
+  // @VisibleForTesting
+  function viewOffers(string calldata ticker, OfferType offerType) public view returns (uint32[] memory) {
+    return offerType == OfferType.BUY ? openOffers[ticker].orderedBuyOffers : openOffers[ticker].orderedSellOffers;
+  }
+
   /**
    * Quicksort functions.
    * TODO: Move this to a separate file.
@@ -64,20 +69,14 @@ contract Market {
     uint32 pivot = arr[uint(left + (right - left) / 2)];
     int iter = 0;
     while (i <= j) {
-      // while (arr[uint(i)] < pivot) i++;
-      // emit Array(arr, 0, iter, i, j, left, right);
       while (compare(arr[uint(i)], pivot, isIncreasing)) i++;
-      // emit Array(arr, 1, iter, i, j, left, right);
-      // while (pivot < arr[uint(j)]) j--;
       while (compare(pivot, arr[uint(j)], isIncreasing)) j--;
-      // emit Array(arr, 2, iter, i, j, left, right);
       if (i <= j) {
         (arr[uint(i)], arr[uint(j)]) = (arr[uint(j)], arr[uint(i)]);
         i++;
         j--;
       }
 
-      // emit Array(arr, 3, iter, i, j, left, right);
       iter++;
     }
     if (left < j)
